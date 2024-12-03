@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm your email address</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td style="padding: 20px; text-align: center; background-color: #f7f7f7;">
+            <img th:src="@{${logo}}" alt="Company Logo" style="height: 50px;">
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto;">
+                <tr>
+                    <td style="font-size: 24px; font-weight: bold; text-align: center;">
+                        Confirm your email address
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 20px 0; font-size: 16px; text-align: left;">
+                        You've created an account with this email address:
+                        <strong th:text="${userEmail}"></strong>.
+                        Click the button below to verify your email address and access your account.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; padding: 20px;">
+                        <a th:href="@{${verificationLink}}"
+                           style="background-color: #78ABA8; color: white; padding: 10px 20px;
+                               text-decoration: none; border-radius: 5px;">
+                            Confirm my email
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 14px; color: #555555; padding-top: 20px;">
+                        <p style="margin: 0;">
+                            Homestayers will never email or call you asking for your password or bank information.
+                            If you receive suspicious emails or calls, do not click on links or provide any details.
+                            Report them to us immediately.
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 14px; color: #555555; padding-top: 20px;">
+                        <p>Kind regards,<br>The Homestayers Team</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 12px; color: #aaaaaa; padding-top: 20px; text-align: center;">
+                        <p>These emails are automated, so please do not reply.<br>
+                            This email was sent by <span th:text="${companyName}">
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

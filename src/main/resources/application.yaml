@@ -1,0 +1,74 @@
+
+postgres:
+  database:
+    url: postgresql://postgres:kcTpHlmJCfWVYowMlBbQoUbxDNkSaYuL@junction.proxy.rlwy.net:57956/railway
+
+
+frontend:
+  origin: http://192.168.43.179:8081
+logging:
+  level.org.springframework:
+      security: DEBUG
+      web:
+        client: DEBUG
+  pattern:
+    console: '%d{HH:mm:ss} %-10.35logger{45} -%msg%n'
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 219545863086-a1qj4stmeamqtb7qgpn5di303n17ctvr.apps.googleusercontent.com
+            client-secret: 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
+
+  devtools:
+    restart:
+      enabled: true
+      exclude: static/**,public/**,META-INF/**
+      additional-paths: src/main/resources
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dillanbundo22@gmail.com
+    password: jejragqcshvyotls
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+              enable: true
+
+  application:
+    production:
+      url: https://homestayers-production.up.railway.app/api/v1
+    secretKey: XYiHIC8C5TsOQLK8EnjbGNo5GpVuyPjaXYiHIC8C5TsOQLK8EnjbGNo5GpVuyPja
+    name: homestayersbackend
+  datasource:
+    username: postgres
+    password: 12345678
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres?prepareThreshold=0
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform:  org.hibernate.dialect.PostgreSQLDialect
+twilio:
+  account:
+      authToken: 904781ceab8f697ee24cc3ccf9c787df
+      phoneNumber: +13192507714
+      verificationServiceSID: VAf2fdf16a2919c3e3fc3b099e36d1a1ea
+      sid: AC01981d6d0df613ccfe716d9ccaed85ca
+      messagingServiceSid: MG3b661a52e30568105397c695acc770d8
