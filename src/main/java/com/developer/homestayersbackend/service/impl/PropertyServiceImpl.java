@@ -1789,6 +1789,7 @@ public class PropertyServiceImpl implements PropertyService {
         Location location = new Location();
         location.setAddress(address);
         property.setLocation(locationRepository.save(location));
+        System.out.println("Before setting the price");
         if(request.getPrice()!=null){
             Price price = new Price();
             Currency curr = Currency.valueOf(request.getPrice().getCurrency());
@@ -1806,6 +1807,7 @@ public class PropertyServiceImpl implements PropertyService {
             price.setAmount(amount);
             property.setPrice(pricingRepository.save(price));
         }
+        System.out.println("After setting the price");
         return propertyRepository.save(property);
     }
 
