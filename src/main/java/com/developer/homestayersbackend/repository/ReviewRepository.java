@@ -13,4 +13,7 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findReviewsByPropertyId(Long propertyId);
     List<Review> findReviewsByUserId(Long userId);
+
+    @Query("Select r from Review r where r.property.host.id = :hostId")
+    List<Review> findReviewsByHostId(@Param("hostId") Long hostId);
 }
