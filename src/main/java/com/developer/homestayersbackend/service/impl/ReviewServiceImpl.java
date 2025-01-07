@@ -1,17 +1,13 @@
 package com.developer.homestayersbackend.service.impl;
 
 import com.developer.homestayersbackend.dto.ReviewRequest;
-import com.developer.homestayersbackend.entity.Property;
-import com.developer.homestayersbackend.entity.Review;
-import com.developer.homestayersbackend.entity.ReviewReply;
-import com.developer.homestayersbackend.entity.User;
+import com.developer.homestayersbackend.dto.ReviewResponseDto;
+import com.developer.homestayersbackend.dto.ReviewsResponseDto;
+import com.developer.homestayersbackend.entity.*;
 import com.developer.homestayersbackend.exception.PropertyNotFoundException;
 import com.developer.homestayersbackend.exception.ReviewNotFoundException;
 import com.developer.homestayersbackend.exception.UserNotFoundException;
-import com.developer.homestayersbackend.repository.PropertyRepository;
-import com.developer.homestayersbackend.repository.ReviewReplyRepository;
-import com.developer.homestayersbackend.repository.ReviewRepository;
-import com.developer.homestayersbackend.repository.UserRepository;
+import com.developer.homestayersbackend.repository.*;
 import com.developer.homestayersbackend.service.api.ReviewService;
 import com.developer.homestayersbackend.util.ReviewStatus;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,6 +27,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserRepository userRepository;
     private final ReviewReplyRepository reviewReplyRepository;
     private final PropertyRepository propertyRepository;
+    private final UserProfileRepository userProfileRepository;
 
     @Override
     public List<Review> getAllReviewReplies(Long reviewId) {
@@ -39,6 +37,30 @@ public class ReviewServiceImpl implements ReviewService {
             return reviewReplyRepository.findByReplyReviewId(reviewId).stream().map(ReviewReply::getReview).toList();
         }
         else throw new ReviewNotFoundException();
+    }
+
+    @Override
+    public List<ReviewsResponseDto> getAllReviewsForHostListings(Long hostId) {
+
+        List<Review> reviews = reviewRepository.findReviewsByHostId(hostId);
+        if(reviews.isEmpty()){
+            return null;
+        }
+
+
+        return reviews.stream().map(review -> {
+            UserProfile userProfile = userProfileRepository.findUserProfileByUserId(review.getUser().getId());
+            ReviewsResponseDto dto = new ReviewsResponseDto();
+            dto.setId(review.getId());
+            dto.setComment(review.getComment());
+            dto.setRating(review.getRating());
+            dto.setReviewerName(review.getUser().getUsername());
+            if(userProfile != null && userProfile.getPhoto()!=null){
+                dto.setProfilePhoto(userProfile.getPhoto().getUrl());
+            }
+            dto.setCreatedAt(review.getCreatedAt().toLocalDate().toString());
+            return dto;
+        }).toList();
     }
 
     @Override
