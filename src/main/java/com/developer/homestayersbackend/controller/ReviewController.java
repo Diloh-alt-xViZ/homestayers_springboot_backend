@@ -3,6 +3,7 @@ package com.developer.homestayersbackend.controller;
 import com.developer.homestayersbackend.dto.ReviewDto;
 import com.developer.homestayersbackend.dto.ReviewRequest;
 import com.developer.homestayersbackend.dto.ReviewResponseDto;
+import com.developer.homestayersbackend.dto.ReviewsResponseDto;
 import com.developer.homestayersbackend.entity.Review;
 import com.developer.homestayersbackend.entity.ReviewReply;
 import com.developer.homestayersbackend.service.api.ReviewService;
@@ -65,6 +66,17 @@ public class ReviewController {
     public ResponseEntity<Review> changeReviewStatus(@PathVariable("reviewId") Long reviewId) {
 
         return ResponseEntity.ok(reviewService.changeReviewStatus(reviewId));
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("/hosts/{hostId}")
+    public ResponseEntity<List<ReviewsResponseDto>> getReviewsForHostListings(@PathVariable("hostId") Long hostId) {
+
+
+
+
+
+        return ResponseEntity.ok().body(reviewService.getAllReviewsForHostListings(hostId));
     }
 
     @PreAuthorize("hasAuthority('USER')")
