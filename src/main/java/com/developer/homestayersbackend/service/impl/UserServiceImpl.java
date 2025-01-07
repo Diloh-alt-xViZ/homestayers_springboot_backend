@@ -3,7 +3,10 @@ package com.developer.homestayersbackend.service.impl;
 import com.developer.homestayersbackend.controller.auth.AuthenticationResponse;
 import com.developer.homestayersbackend.dto.*;
 import com.developer.homestayersbackend.entity.*;
-import com.developer.homestayersbackend.exception.*;
+import com.developer.homestayersbackend.exception.EmailVerificationTokenNotFoundException;
+import com.developer.homestayersbackend.exception.UserNotFoundException;
+import com.developer.homestayersbackend.exception.UserNotVerifiedException;
+import com.developer.homestayersbackend.exception.UserProfileNotFoundException;
 import com.developer.homestayersbackend.repository.*;
 import com.developer.homestayersbackend.service.JwtService;
 import com.developer.homestayersbackend.service.api.EmailService;
@@ -169,10 +172,14 @@ public class UserServiceImpl implements UserService {
         return authenticationResponse;
     }
 
+
+
     @Override
     public AuthenticationResponse createNewPhoneUserAndAuthenticate(PhoneUserProfileDetailsDto dto) {
 
-        User dbUser = userRepository.findByUsername(dto.getPhoneNumber()).orElseThrow(UserNotFoundException::new);
+        String phoneNumber = PhoneNumberUtils.getPhoneNumber(dto.getPhoneNumber()).getFullNumber();
+        System.out.println("Phone Number:"+phoneNumber);
+        User dbUser = userRepository.findByUsername(phoneNumber).orElseThrow(UserNotFoundException::new);
 
         UserProfile userProfile = getUserProfile(dto, dbUser);
         userProfileRepository.save(userProfile);
@@ -285,7 +292,21 @@ public class UserServiceImpl implements UserService {
         else throw new UserNotFoundException();
     }
 
-  @Override
+    @Override
+    public AuthenticationResponse loginPhoneUser(PhoneLoginRequest req) {
+
+        User user = userRepository.findByUsername(PhoneNumberUtils.getPhoneNumber(req.getPhoneNumber()).getFullNumber()).orElseThrow(UserNotFoundException::new);
+
+        if(passwordEncoder.matches(req.getPassword(), user.getPassword())){
+            return getAuthenticationResponse(user);
+        }
+
+        else {
+            throw new IllegalArgumentException("Invalid username or password");
+        }
+    }
+
+    @Override
     public AuthenticationResponse login(String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
