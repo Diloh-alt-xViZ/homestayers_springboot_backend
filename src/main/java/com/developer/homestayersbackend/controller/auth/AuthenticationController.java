@@ -5,11 +5,10 @@ import com.developer.homestayersbackend.dto.*;
 import com.developer.homestayersbackend.entity.PhoneVerification;
 import com.developer.homestayersbackend.entity.User;
 import com.developer.homestayersbackend.exception.UserNotFoundException;
+import com.developer.homestayersbackend.service.CustomPhoneUserService;
 import com.developer.homestayersbackend.service.api.PhoneNumberAuthService;
 import com.developer.homestayersbackend.service.api.PhoneVerificationService;
 import com.developer.homestayersbackend.service.api.UserService;
-import com.developer.homestayersbackend.util.AuthenticationStatus;
-import com.developer.homestayersbackend.util.PhoneNumberUtils;
 import com.developer.homestayersbackend.util.RegistrationStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +31,7 @@ public class AuthenticationController {
     private final PhoneVerificationService phoneVerificationService;
     private final UserService userService;
     private final PhoneNumberAuthService authService;
+    private final CustomPhoneUserService customPhoneUserService;
     private Map<String,String> otpMap = new ConcurrentHashMap<>();
 //
 //    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
@@ -102,6 +101,7 @@ public class AuthenticationController {
 
 
 
+
     @PostMapping("/phone-number/user-profile-details")
     public ResponseEntity<AuthenticationResponse> setPhoneUserProfileDetails(@RequestBody @Valid PhoneUserProfileDetailsDto dto){
 
@@ -133,6 +133,13 @@ public class AuthenticationController {
 
     }
 
+
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("/phone-number/change-number/verify")
+    public ResponseEntity<String> verifyNewPhone(@RequestBody PhoneNumberAuth authRequest,@AuthenticationPrincipal User user){
+
+        return ResponseEntity.ok(phoneVerificationService.verifyNewPhone(authRequest,user.getId()));
+    }
 
     @GetMapping("/checkTokenValidity")
     public ResponseEntity<String> checkTokenValidity(@AuthenticationPrincipal User user) {
@@ -185,11 +192,13 @@ public class AuthenticationController {
         return ResponseEntity.ok("hi");
     }
 
+
+
     @PostMapping("/phone-number/request-verification")
     public ResponseEntity<String> phoneNumber(@RequestParam String phoneNumber) {
-                phoneNumber = "+" + phoneNumber;
+
             PhoneVerification otp = phoneVerificationService.getPhoneVerification(phoneNumber);
-            String response = "";
+            String response;
             if(otp!=null){
                 response = "Success";
             }
@@ -198,6 +207,18 @@ public class AuthenticationController {
             }
             return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/phone-number/attemptLogin")
+    public ResponseEntity<String> attemptPhoneLogin(@RequestParam String phoneNumber){
+        return ResponseEntity.ok(customPhoneUserService.checkRegistrationStatus(phoneNumber));
+    }
+
+    @PostMapping("/phone-number/login")
+    public ResponseEntity<AuthenticationResponse> loginPhoneUser(@RequestBody PhoneLoginRequest req){
+
+        return ResponseEntity.ok(userService.loginPhoneUser(req));
+    }
+
 
     @PostMapping("/phone-number/verifyPhone")
     public ResponseEntity<AuthenticationResponse> verifyPhone(@RequestBody PhoneNumberAuth phoneNumberAuth) {
