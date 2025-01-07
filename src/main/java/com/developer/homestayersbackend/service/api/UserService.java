@@ -15,7 +15,7 @@ public interface UserService {
     RegistrationStatus attemptLogin(String email) throws UserNotFoundException;
     Optional<User> validateUserByEmail(String email);
     //AuthenticationResponse registerUser(RegistrationRequest user);
-    //TODO
+
     //AuthenticationResponse loginUser(AuthenticationRequest request);
     List<User> getAllUsers();
     User getUserById(Long id);
@@ -49,4 +49,6 @@ public interface UserService {
     AuthenticationResponse createNewPhoneUserAndAuthenticate(PhoneUserProfileDetailsDto dto);
 
     boolean checkUserDetails(Long id);
+
+    AuthenticationResponse loginPhoneUser(PhoneLoginRequest req);
 }
