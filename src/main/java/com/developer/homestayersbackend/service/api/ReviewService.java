@@ -1,6 +1,7 @@
 package com.developer.homestayersbackend.service.api;
 
 import com.developer.homestayersbackend.dto.ReviewRequest;
+import com.developer.homestayersbackend.dto.ReviewsResponseDto;
 import com.developer.homestayersbackend.entity.Review;
 import com.developer.homestayersbackend.entity.ReviewReply;
 
@@ -15,4 +16,6 @@ public interface ReviewService {
     Review changeReviewStatus(Long reviewId);
 
     List<Review> getAllUserReviews(Long userId);
+
+    List<ReviewsResponseDto> getAllReviewsForHostListings(Long hostId);
 }
